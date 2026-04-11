@@ -8,7 +8,7 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        value: postgresql+psycopg2://blockvote_db_nel5_user:ijIbDn5eX51OLDJBzAyOYjnAkY27VZ5j@dpg-d6gqqc1drdic73cc5agg-a.oregon-postgres.render.com/blockvote_db_nel5
+        value: postgresql+psycopg2://blockvote_db_nel5_user:ijIbDn5eX51OLDJBzAyOYjnAkY27VZ5j@dpg-d6gqqc1drdic73cc5agg-a.oregon-postgres.render.com/blockvote_db_nel5?sslmode=require
       - key: GANACHE_URL
         value: https://eth-sepolia.g.alchemy.com/v2/OK-G_IBEtY3qUAuxkLuoK
       - key: GANACHE_NETWORK_ID
