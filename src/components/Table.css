@@ -1,0 +1,42 @@
+.apple-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.apple-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.apple-table th {
+  padding: 14px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-primary-bg);
+}
+
+.apple-table td {
+  padding: 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.apple-table tbody tr:nth-child(even) {
+  background-color: var(--color-row-zebra);
+}
+
+.apple-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.apple-table tbody tr:last-child td {
+  border-bottom: none;
+}
