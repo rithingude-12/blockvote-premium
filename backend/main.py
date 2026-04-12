@@ -10,12 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.routers import auth, voters, voting, elections
 
-try:
-    # Create tables in sqlite if they don't exist
-    Base.metadata.create_all(bind=engine)
-    print("Database tables initialized successfully.")
-except Exception as e:
-    print(f"Database initialization deferred or failed: {e}")
+# Table creation moved inside lifespan for retry resilience
 
 from contextlib import asynccontextmanager
 import time
@@ -33,6 +28,10 @@ async def lifespan(app: FastAPI):
     for attempt in range(max_retries):
         db: Session = SessionLocal()
         try:
+            print(f"Attempting database initialization (Attempt {attempt + 1}/{max_retries})...")
+            # Create tables if they don't exist
+            Base.metadata.create_all(bind=engine)
+            
             print(f"Attempting superadmin seeding (Attempt {attempt + 1}/{max_retries})...")
             # Ensure superadmin exists and has the correct password/status
             admin = db.query(Admin).filter_by(username="superadmin").first()
