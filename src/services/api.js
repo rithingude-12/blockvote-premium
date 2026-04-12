@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://blockvote-api.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://blockvote-api-rithin-2026.onrender.com/api';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -19,10 +19,17 @@ api.interceptors.request.use((config) => {
 // This warms the Render.com free-tier server in the background
 // so it's ready by the time the user hits submit
 export const pingServer = () => {
-    axios.get(`${API_URL}/health`, { timeout: 60000 }).catch(() => {
-        // Silently retry once after 10s if the first ping fails
-        setTimeout(() => axios.get(`${API_URL}/health`, { timeout: 60000 }).catch(() => {}), 10000);
+    // Ping the ultra-fast /ping endpoint to wake the server
+    // We use the base API_URL which is .../api
+    const wakeUp = () => axios.get(`${API_URL}/ping`, { 
+        timeout: 30000,
+        headers: { 'Cache-Control': 'no-cache' } 
+    }).catch(() => {
+        // If it fails (likely server is cold), retry after a short delay
+        setTimeout(() => axios.get(`${API_URL}/health`, { timeout: 45000 }).catch(() => {}), 5000);
     });
+
+    wakeUp();
 };
 
 export const authAPI = {

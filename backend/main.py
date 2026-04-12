@@ -35,6 +35,20 @@ app.add_middleware(
 def root():
     return {"message": "Welcome to the Blockchain-Based Voting System API - Active"}
 
+@app.get("/api/health")
+def health_check():
+    """Lightweight health check for the API"""
+    return {
+        "status": "healthy",
+        "timestamp": os.getenv("RENDER_SITE_ID", "local"),
+        "version": "1.0.0"
+    }
+
+@app.get("/api/ping")
+def ping():
+    """Ultra-fast ping endpoint with zero dependencies"""
+    return "pong"
+
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(voters.router, prefix="/api/voters", tags=["Voters"])

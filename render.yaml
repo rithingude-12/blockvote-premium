@@ -32,6 +32,6 @@ services:
     startCommand: node serve.cjs
     envVars:
       - key: VITE_API_URL
-        value: https://blockvote-api.onrender.com/api
+        value: https://blockvote-api-rithin-2026.onrender.com/api
       - key: NODE_VERSION
         value: "20"

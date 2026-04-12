@@ -39,3 +39,5 @@ backend/test*.log
 backend/face_error.txt
 backend/test_traceback*.txt
 backend/validation_error.log
+
+.vercel
