@@ -20,8 +20,8 @@ from .middleware.auth import get_password_hash
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Database Initialization & Admin Seeding with robustness for Render SSL issues
-    max_retries = 5
-    retry_delay = 2 # seconds
+    max_retries = 10
+    retry_delay = 5 # seconds
     
     for attempt in range(max_retries):
         try:
