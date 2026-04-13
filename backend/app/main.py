@@ -67,6 +67,18 @@ async def lifespan(app: FastAPI):
                 print("CRITICAL: Application failed to initialize database after all retries.")
     yield
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class CORSResponseMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
+
 app = FastAPI(
     title="Blockchain-Based Voting System API",
     description="API for managing elections, voter registrations, biometrics, and blockchain voting",
@@ -74,13 +86,29 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Robust CORS setup
+app.add_middleware(CORSResponseMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for production stability
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"GLOBAL ERROR CAUGHT: {exc}")
+    # Return a JSON response with CORS headers even on crash
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error - Database connection might be transiently dropping on Render."},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 
 @app.get("/")
 def root():
