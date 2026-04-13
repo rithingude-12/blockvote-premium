@@ -12,8 +12,17 @@ router = APIRouter()
 
 @router.post("/login", response_model=Token)
 def login(request: LoginRequest, db: Session = Depends(get_db)):
-    admin = db.query(Admin).filter(Admin.username == request.username).first()
+    try:
+        admin = db.query(Admin).filter(Admin.username == request.username).first()
+    except Exception as e:
+        import traceback
+        raise HTTPException(
+            status_code=500,
+            detail=f"DB Error: {str(e)}\n\nTraceback: {traceback.format_exc()}"
+        )
+    
     if not admin or not verify_password(request.password, admin.password_hash):
+
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

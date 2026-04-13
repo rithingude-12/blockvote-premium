@@ -12,7 +12,6 @@ from .config import settings
 engine = create_engine(
     settings.DATABASE_URL,
     connect_args={
-        "sslmode": "require", 
         "connect_timeout": 30,
         "keepalives": 1,
         "keepalives_idle": 30,
