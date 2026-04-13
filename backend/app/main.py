@@ -73,7 +73,16 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 class CORSResponseMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        except Exception as e:
+            print(f"MIDDLEWARE ERROR CAUGHT: {e}")
+            import traceback
+            response = JSONResponse(
+                status_code=500,
+                content={"detail": f"Internal Server Error: {str(e)}\n\n{traceback.format_exc()}"}
+            )
+            
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
@@ -120,7 +129,7 @@ def health_check():
     return {
         "status": "healthy",
         "timestamp": os.getenv("RENDER_SITE_ID", "live"),
-        "version": "1.0.2-resilient"
+        "version": "1.0.3-internal-db"
     }
 
 @app.get("/api/ping")
